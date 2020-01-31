@@ -2,7 +2,6 @@
    pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE HTML>
-
 <html>
 <head>
 <title>My Doctor</title>
@@ -10,8 +9,10 @@
 <meta name="viewport"
    content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel="stylesheet" href="resources/css/main.css" />
-<script src="http://code.jquery.com/jquery-3.4.1.js"></script>
-<!-- 지도관련 스크립트 -->
+ <script src="resources/js/jquery-3.4.1.min.js"></script> 
+
+ <!-- <script src="https://code.jquery.com/jquery-3.4.1.js"></script>  -->
+ <!-- 지도관련 스크립트 -->
 <script type="text/javascript"
    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=938fec5f1038f5f89dbb95889b66091b&libraries=services"></script>
  <style type="text/css">
@@ -25,10 +26,7 @@
 </style>  
 
 <script type="text/javascript">
-
-$(function() {
-      
-      
+$(function(){  
 /*    $(window).ajaxStart(
          function(){console.log("실행중");
          //$("#roding").css('background-image', 'url("resources/images/ajax-loader.gif")');
@@ -41,12 +39,9 @@ $(function() {
             //$("#roding").css('background-image', 'url("")');
             });
  */
-
-   if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-
-         var lon = position.coords.longitude, // 경도
-         lat = position.coords.latitude; // 위도                  
+ 
+ 
+	 function location(lon,lat){
          //지도
          var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
          mapOption = {
@@ -165,6 +160,7 @@ $(function() {
                         
                             kakao.maps.event.addListener(marker, 'click', function() {
                                
+                            	
                                //console.log($("a[id='yadm"+$(this)[0].label+"']"));
                                //$("a[id='yadm"+$(this)[0].label+"']").focus();
                                $("a[id=yadm"+(index+1)+"]").focus();
@@ -630,15 +626,48 @@ $(function() {
                            });//pha
       
          
-         
-         
-      });//geo funtion
+         }
 
-   } else {
-
-      //var locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
-
+   if(navigator.geolocation){
+	   //console.log("뭔데");	
+	  	
+	   
+      navigator.geolocation.getCurrentPosition(onSuccess,onError)//geo funtion
+      
+      
+      
+      
+   }else{
+	alert("뭥미") ;
    }
+ /*   if(!($.contains($("#div_result"),$("table")))){
+	  alert("없다");
+	  var lon = 126.9738851, // 경도
+	   lat = 37.5646291; // 위도                  
+	  	location(lon,lat);   
+	  
+   }
+    */
+
+    function onSuccess(position) {    	  
+  	 // console.log(position);
+       var lon = position.coords.longitude, // 경도
+       lat = position.coords.latitude; // 위도              
+       location(lon,lat);    
+    }
+    function onError(){
+    	var lon = 126.9738851, // 경도
+ 	   lat = 37.5646291; // 위도                  
+ 	  	location(lon,lat);  
+    }
+
+
+   //var locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
+   
+   
+ 
+ 
+ 
 
 });//onload
 

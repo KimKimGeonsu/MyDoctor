@@ -2,6 +2,7 @@ package com.project.mydoctor;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -28,13 +29,11 @@ public class HomeController {
 	
 	// test용
 	@GetMapping(value = "/main")
-	public ModelAndView mainPage(ModelAndView mv) {
+	public ModelAndView mainPage(ModelAndView mv,HttpServletRequest req) {
 		List<Hospital> list = null;
-		list = hospitalservice.getHosListTest();
-		
+		list = hospitalservice.getHosListTest();		
 		mv.setViewName("main/main");
-		mv.addObject("hoslist", list);
-		
+		mv.addObject("hoslist", list);		
 		return mv;
 	}
 

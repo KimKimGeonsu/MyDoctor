@@ -10,7 +10,8 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=no" />
 <link rel="stylesheet" href="resources/css/main.css" />
-<script src="http://code.jquery.com/jquery-3.4.1.js"></script>
+<!-- <script src="http://code.jquery.com/jquery-3.4.1.js"></script> -->
+<script src="resources/js/jquery-3.4.1.min.js"></script> 
 </head>
 <body class="is-preload">
 	<!-- Wrapper -->
@@ -134,8 +135,21 @@
                         <a href="reserve.net?yki=${vo.ykiho }"
 									class="button large reservationbtn koreanfont"
 									style="float: right; margin-top: 3%;" id="res_hos">예약하기</a>
-                     </c:if>
+                     </c:if>                    
                      <div>
+                      <c:if test="${vo.addr!='undefined'}">
+                      		주소 :${vo.addr}<br>
+                     </c:if>
+                     <c:if test="${vo.postNo!='undefined'}">
+                 			  우편번호 ${vo.postNo}<br>
+                     </c:if>                   
+                     <c:if test="${vo.estbDd!='undefined'}">
+                    			 개설일자 : ${vo.estbDd}<br>
+                     </c:if>
+                     <c:if test="${vo.drTotCnt!='undefined'}">
+                   			  총 의사수 : ${vo.drTotCnt}<br>
+                     </c:if>
+                     
                         <i class="fas fa-phone-alt"></i>${vo.telno }<br>
 								<c:if test="${vo.hospUrl!='undefined'}">
 									<a href="${vo.hospUrl}" target="_blank">사이트 방문하기</a>

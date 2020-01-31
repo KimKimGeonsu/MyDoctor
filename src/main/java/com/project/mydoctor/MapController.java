@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,12 +28,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
+import com.project.mydoctor.model.All_Hs;
+import com.project.mydoctor.model.All_test;
 import com.project.mydoctor.model.HdetailVO;
 import com.project.mydoctor.model.Hospital;
 import com.project.mydoctor.model.Work_hs;
 import com.project.mydoctor.service.HospitalService;
+
+
 
 
 /**
@@ -48,20 +56,142 @@ public class MapController {
 	private static final Logger logger = LoggerFactory.getLogger(MapController.class);
 	private static final String radius = "3000";
 	
+	
+	/**
+	 * @author 김건수 
+	 * @param Allquery
+	 * @return
+	 * @throws Exception
+	 * @모든병원검색
+	 */
+	@RequestMapping(value = "Allquery.net",method = RequestMethod.POST)
+	public String Allquery(String Allquery, Model model)throws Exception {
+		String kim = "";
+		String p ="1";
+		
+		All_test all = Alldetail(URLEncoder.encode(Allquery,"UTF-8"),p,kim);	
+		
+		if(all!=null) {
+		model.addAttribute("all", all.getItem());
+		model.addAttribute("hidden", Allquery);
+		}else {
+			model.addAttribute("msg", "검색된 결과가없습니다");
+			model.addAttribute("hidden", Allquery);
+		}
+		
+		return "details/allquery";
+	}
+	
+	/**
+	 * @author 김건수
+	 * @param Allquery
+	 * @param p
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 * @귀찮아서 jsp로뺌
+	 */
+	@RequestMapping(value = "All_click.net",method = RequestMethod.POST)
+	public String Allclick(String Allquery,String p,@RequestParam(value = "",required =false,defaultValue = "")String kim,Model model)throws Exception {
+		System.out.println("이름");
+		System.out.println(Allquery);
+		System.out.println("페이지");
+		System.out.println(p);
+		System.out.println("셀렉트박스");
+//		System.out.println(kim);
+//		if(kim==null) {
+//			kim="";
+//		}			
+		if(p==null) {
+		p="1";}		
+		All_test all = Alldetail(URLEncoder.encode(Allquery,"UTF-8"),p,kim);	
+		
+		if(all!=null) {
+		model.addAttribute("all", all.getItem());
+		model.addAttribute("hidden", Allquery);
+		}else {
+			model.addAttribute("msg", "검색된 결과가없습니다");
+			model.addAttribute("hidden", Allquery);
+		}
+		
+		return "details/all_click";
+	}
+	
+
+	/**
+	 * @author 김건수
+	 * @param Allquery
+	 * @return hdtailVO
+	 * 
+	 */
+	public All_test Alldetail(String all,String p,String kim) throws Exception{				
+		Gson gson = new Gson();
+		All_Hs all_one = new All_Hs();
+		All_test all_t = new All_test();
+		JSONParser jsonparser = new JSONParser();
+		
+		JSONObject jsonobject = (JSONObject) jsonparser.parse(readUrl("http://apis.data.go.kr/B551182/hospInfoService/getHospBasisList?numOfRows=10&_type=json&ServiceKey=G9rzPM3G3d1FVN%2F8ZyPSkwQ7B0IICxPX3Sks%2FrUY2wLu94BsUzYPUHzcNhSwJj%2FIjuLsoBMYMJ7JcX4thVA7Lg%3D%3D"
+			+ "&yadmNm="+all+"&pageNo="+p+"&sidoCd="+kim));
+		
+		JSONObject json = (JSONObject) jsonobject.get("response");
+		JSONObject body = (JSONObject) json.get("body");
+		Long total = (Long) body.get("totalCount");
+		if(total==1) {	
+			JSONObject items = (JSONObject) body.get("items");				
+			JSONObject item = (JSONObject) items.get("item");
+			//ㅅㅄ ㅄㅄ ㅂㄷㅅ ㅂ ㅅㅄ ㅄㅄ ㅄ ㅄ ㅄ ㅄ ㄷㅄ ㄷ
+			all_one.setClCd(items.get("clCd"));
+			all_one.setAddr(item.get("addr"));
+			all_one.setClCdNm(item.get("clCdNm"));
+			all_one.setDrTotCnt(item.get("drTotCnt"));
+			all_one.setEstbDd(item.get("estbDd"));
+			all_one.setGdrCnt(item.get("gdrCnt"));
+			all_one.setIntnCnt(item.get("intnCnt"));
+			all_one.setPostNo(item.get("postNo"));
+			all_one.setHospUrl(item.get("hospUrl"));
+			all_one.setResdntCnt(item.get("resdntCnt"));
+			all_one.setSdrCnt(item.get("sdrCnt"));
+			all_one.setSgguCd(item.get("sgguCd"));
+			all_one.setSgguCdNm(item.get("sgguCdNm"));
+			all_one.setSidoCd(item.get("sidoCd"));
+			all_one.setSidoCdNm(item.get("sidoCdNm"));
+			all_one.setTelno(item.get("telno"));
+			all_one.setXPos(item.get("XPos"));
+			all_one.setYPos(item.get("YPos"));
+			all_one.setYadmNm(item.get("yadmNm"));
+			all_one.setYkiho(item.get("ykiho"));
+			List<All_Hs> al = new ArrayList<All_Hs>();
+			al.add(all_one);
+			all_t.setItem(al);
+			 return all_t;
+			
+		}else if(total==0) {
+			return null;
+		}else {		
+		JSONObject items = (JSONObject) body.get("items");
+		String a = items.toJSONString();
+		All_test testing = gson.fromJson(a, All_test.class);
+		return testing;
+		}
+	
+	}
+	
+	
+	
+	
 	@ResponseBody
 	@RequestMapping(value = "favorites_add.net",method = RequestMethod.POST)
 	public int favorites_add(HttpSession session,String yki){
 			String member =(String)session.getAttribute("loginid");						
 			Hospital result = hospitalService.getFavorites(yki);
-			//System.out.println(result.getId());
-			//System.out.println(result.getYadmNm());
+
 			Map<String, String> fa= new HashMap<String, String>();
 			fa.put("id", member);
 			fa.put("hosid", result.getId());
 			fa.put("hosname", result.getYadmNm());
 			
 			int insert = hospitalService.Fa_insert(fa);
-			System.out.println(insert);
+
 			
 		return insert;
 	}
@@ -71,20 +201,18 @@ public class MapController {
 	public int favorites_del(HttpSession session,String yki){
 			String member =(String)session.getAttribute("loginid");						
 			Hospital result = hospitalService.getFavorites(yki);
-			System.out.println(result.getId());
-			System.out.println(result.getYadmNm());
 			Map<String, String> fa= new HashMap<String, String>();
 			fa.put("id", member);
 			fa.put("hosid", result.getId());
-			fa.put("hosname", result.getYadmNm());
-			
+			fa.put("hosname", result.getYadmNm());			
 			int insert = hospitalService.Fa_delete(fa);
-			System.out.println(insert);
 			
-		return insert;
+			return insert;
 		
 		
 	}
+	
+	
 	
 	/**
 	 * @param req 좌표
@@ -156,6 +284,7 @@ public class MapController {
 		if(cate!="")
 		parameter = parameter + "&dgsbjtCd="+cate;
 		
+		//System.out.println(parameter);
 		
 		URL url = new URL(parameter);
 
@@ -182,6 +311,7 @@ public class MapController {
 					+ "]" +s.substring(s.indexOf("numOf")-3)    ;
 			
 		}
+		//System.out.println(s);
 //		System.out.println(s);
 		out.println(s);
 	}
@@ -197,6 +327,8 @@ public class MapController {
 	 */
 	@RequestMapping(value = "detail.net", method = RequestMethod.GET)
 	public String locationView(HdetailVO vo, Model model,HttpSession session) throws Exception {
+		
+		//System.out.println(vo);
 //		System.out.println(vo.getYkiho());	
 		/*
 		 		1. 요양기호로 병원 검색됨 -> 기존 자료 사용
@@ -219,7 +351,7 @@ public class MapController {
 			fa.put("hosid",favorite);
 			String count = hospitalService.getFavorite_re(fa);
 			if(count.equals("1")) {				
-				System.out.println("카운트: "+count);
+				//System.out.println("카운트: "+count);
 				model.addAttribute("count", count);
 				}
 			}
@@ -255,39 +387,13 @@ public class MapController {
 	
 	/**
 	 * @param ykiho
-	 * @return 결과값 상세
+	 * @return 결과값 상세가 제대로 안나와 진료과목으로 바꿈
 	 */
 	public HdetailVO detail(HdetailVO result) {
 		
 		JSONParser jsonparser = new JSONParser();
 		JSONObject jsonobject;
 		try {
-			
-			//api 안나오는거 있음 요양기호 -> url에 보내줌
-//			HdetailVO result = new HdetailVO();
-//			jsonobject = (JSONObject) jsonparser.parse(readUrl(
-//					"http://apis.data.go.kr/B551182/medicInsttDetailInfoService/getFacilityInfo?ServiceKey=G9rzPM3G3d1FVN%2F8ZyPSkwQ7B0IICxPX3Sks%2FrUY2wLu94BsUzYPUHzcNhSwJj%2FIjuLsoBMYMJ7JcX4thVA7Lg%3D%3D&_type=json&ykiho="
-//							+ ykiho));
-//			
-//			JSONObject json = (JSONObject) jsonobject.get("response");
-//			JSONObject body = (JSONObject) json.get("body");
-//			JSONObject items = (JSONObject) body.get("items");
-//			JSONObject item = (JSONObject) items.get("item");					
-//			//시설정보
-//			result.setYadmNm((String) item.get("yadmNm"));
-//			result.setAddr((String) item.get("addr"));
-//			result.setTelno((String) item.get("telno"));
-//			result.setHospUrl((String) item.get("hospUrl"));
-//			result.setClCdNm((String)item.get("clCdNm"));			
-//			result.setEstbDd((Long)item.get("estbDd"));
-//			
-			//근무시간 따로 클래스빼야함
-//			jsonobject = (JSONObject) jsonparser.parse(readUrl(
-//					"http://apis.data.go.kr/B551182/medicInsttDetailInfoService/getDetailInfo?ServiceKey=G9rzPM3G3d1FVN%2F8ZyPSkwQ7B0IICxPX3Sks%2FrUY2wLu94BsUzYPUHzcNhSwJj%2FIjuLsoBMYMJ7JcX4thVA7Lg%3D%3D&_type=json&ykiho="
-//							+ ykiho));
-//			
-			
-			
 			//진료과목			
 			jsonobject = (JSONObject) jsonparser.parse(readUrl(
 					"http://apis.data.go.kr/B551182/medicInsttDetailInfoService/getMdlrtSbjectInfoList?ServiceKey=G9rzPM3G3d1FVN%2F8ZyPSkwQ7B0IICxPX3Sks%2FrUY2wLu94BsUzYPUHzcNhSwJj%2FIjuLsoBMYMJ7JcX4thVA7Lg%3D%3D&_type=json&ykiho="
@@ -297,7 +403,6 @@ public class MapController {
 			 JSONObject body = (JSONObject) json.get("body");			
 			 Long total = (Long) body.get("totalCount");
 			
-			 
 			 if(total==0) {
 				 return result;
 			 }
@@ -405,9 +510,9 @@ public class MapController {
 	 * 
 	 */
 	private static String readUrl(String urlString) throws Exception {
-		
-		
-		BufferedReader reader = null;
+		System.out.println(urlString);
+		//System.out.println(urlString);
+		BufferedReader reader = null;		
 		try {
 			URL url = new URL(urlString);
 			reader = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -423,4 +528,8 @@ public class MapController {
 				reader.close();
 		}
 	}
+	
+	
+	
+	
 }
