@@ -31,18 +31,36 @@
 }
 </style>
 <script type="text/javascript">
-$(function(){
-	
+$(function(){	
 	var p = 1;
 	$("#add").click(function() {	
 		p++;
+		add();				
+	});//add
+
+	$("#su").click(function() {		
+		 p =1;
+		 search();
+	});//서치
+	
+	$("#geon").keydown(function(key){
+		 p =1;
+		 if(key.keyCode == 13){
+			 search();
+		 }
+	});
+
+	
+	function add(){
 		$.ajax({
-			url : "All_click.net",
+			url : "Allquery.net",
 			type : "post",
 			data : {
 				"p" : p,
 				"Allquery" : $("#geon").val(),
-				"kim" :$("#kim option:selected").val()
+				"kim" :$("#kim option:selected").val(),
+				"kim2" :$("#kim2 option:selected").val(),
+				"kim3" : "kim3"
 			},
 			success : function(data) {				
 				$('tbody').last().append(data);		
@@ -52,20 +70,21 @@ $(function(){
 			}
 
 		});//ajax
-				
-	});//add
-
-	$("#su").click(function() {		
-
+	}
+	
+	function search(){
 		$.ajax({
-			url : "All_click.net",
+			url : "Allquery.net",
 			type : "post",
 			data : {
-				"kim" : $("#kim option:selected").val(),				
-				"Allquery" : $("#geon").val()
+				"p" : p,
+				"Allquery" : $("#geon").val(),
+				"kim" :$("#kim option:selected").val(),
+				"kim2" :$("#kim2 option:selected").val(),
+				"kim3" : "kim3"
 			},
-			success : function(data) {		
-				
+			success : function(data) {
+				$("#total").html("");				
 				$('tbody').last().empty();
 				$('tbody').last().append(data);	
 				
@@ -75,7 +94,7 @@ $(function(){
 			}
 
 		});//ajax
-	});//서치
+	}
 	
 	
 	//스크롤
@@ -108,70 +127,88 @@ $(function(){
                      <a href="main" class="logo"><strong>My Doctor</strong> by
                         team.5</a>
                   </header>
+
                   <!-- 검색 -->
 
-                  <select name="kim" style="width: 20%; display: inline-block;" id="kim">
-    		<option value="">지역선택</option>
-    		<option value="110000">서울</option>
-    		<option value="310000">경기도</option>
-    		<option value="220000">인천</option>
-    		<option value="250000">대전</option>
-    		<option value="210000">부산</option>
-    		<option value="320000">강원도</option>
-    		<option value="380000">경상남도</option>
-    		<option value="370000">경상북도</option>
-    		<option value="360000">전라남도</option>
-    		<option value="350000">전라북도</option>
-    		<option value="340000">충천남도</option>
-    		<option value="330000">충천북도</option>
-    		<option value="390000">제주시</option>
-			</select>
-            <input type="text" style="width: 50%; display: inline-block;" name="geon" id="geon" value="${hidden}">           
+                  <select name="kim" style="width: 15%; display: inline-block;" id="kim">
+		    				<option value="no">지역선택</option>
+		    				<option value="110000">서울</option>
+		    				<option value="310000">경기도</option>
+		    				<option value="220000">인천</option>
+		    				<option value="250000">대전</option>
+							<option value="210000">부산</option>
+				    		<option value="320000">강원도</option>
+				    		<option value="380000">경상남도</option>
+				    		<option value="370000">경상북도</option>
+				    		<option value="360000">전라남도</option>
+				    		<option value="350000">전라북도</option>
+				    		<option value="340000">충천남도</option>
+				    		<option value="330000">충천북도</option>
+				    		<option value="390000">제주시</option>
+				</select>
+				 <select name="kim2" id="kim2" class="categorysel" style="width: 15%; display: inline-block; ">
+                              <option value="no">진료과목</option>
+                              <option value="01">내과</option>
+                              <option value="04">외과</option>
+                              <option value="05">정형외과</option>
+                              <option value="08">성형외과</option>
+                              <option value="10">산부인과</option>
+                              <option value="11">소아청소년과</option>
+                              <option value="12">안과</option>
+                              <option value="13">이비인후과</option>
+                              <option value="14">피부과</option>
+                              <option value="15">비뇨기과</option>
+                              <option value="49">치과</option>                              
+                           </select>
+		
+            <input type="text" style="width: 50%; display: inline-block;" name="geon" id="geon" value="${hidden}">
+                       
             <button style="width: 10% ;" name="su" id="su">검색</button>
-
-            <!-- 검색 -->  
-                  	<section id="banner">
-            
+	
+		
+			<h4 id ="total">총결과 수 : ${total }</h4>
+						
+               	<section id="banner" style="padding: 1em 0 1em 0;">           
             <!-- Banner: body -->
                   
              <table style="font-size: 80%">
              <thead>
                <tr id="test">
                <td>분류</td>
+               <td>지역</td>
                <td style="text-align: center;">이름</td>
                <td>주소</td>
                </tr>
              </thead>
              <tbody>
-               <c:choose>
+                <c:choose>
                <c:when test="${msg eq null }">               
-               <c:forEach var="hs" items="${all}">
-				<tr>
+             <c:forEach var="hs" items="${all}" >
+				<tr>				
 				<td style="font-size: 80%">${hs.clCdNm}</td>
+				<td style="font-size: 80%">${hs.sgguCdNm}</td>
 				<td style="text-align: center;"><a style="font-size: 80%" href="detail.net?ykiho=${hs.ykiho}&yadmNm=${hs.yadmNm}&clCdNm=${hs.clCdNm}&postNo=${hs.postNo }&addr=${hs.addr}&telno=${hs.telno}&hospUrl=${hs.hospUrl}&estbDd=${hs.estbDd}&drTotCnt=${hs.drTotCnt}&YPos=${hs.YPos}&XPos=${hs.XPos}">${hs.yadmNm}</a></td>
 				<td style="font-size: 80%">${hs.addr}</td>
 				</tr>
-				</c:forEach>
+				</c:forEach> 
 				</c:when>
 				<c:otherwise>
-				<tr><td colspan="3">${msg}</td></tr>
+				<tr><td colspan="3" style="text-align: center;">${msg}</td></tr>
 				</c:otherwise>
 				</c:choose>
 				</tbody>				                 
                </table>                      
             </section>                    
-             <c:if test="${fn:length(all)>=10}"><button id="add">더보기</button></c:if>             
+             <c:if test="${fn:length(all)>=10}"><button id="add">더보기</button></c:if>
             <!-- banner end -->
             
-            
-         </div>
+            </div>
       </div>
-		
-
 
       <jsp:include page="../header/footer.jsp"></jsp:include>
          
       </div>
+ 
   
 <a href="#top" class="bktop">&uarr;</a>
 

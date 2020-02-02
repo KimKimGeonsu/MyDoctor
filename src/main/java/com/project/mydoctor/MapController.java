@@ -9,7 +9,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -53,7 +51,7 @@ public class MapController {
 	@Autowired
 	private HospitalService hospitalService;
 	
-	private static final Logger logger = LoggerFactory.getLogger(MapController.class);
+	//private static final Logger logger = LoggerFactory.getLogger(MapController.class);
 	private static final String radius = "3000";
 	
 	
@@ -65,76 +63,70 @@ public class MapController {
 	 * @모든병원검색
 	 */
 	@RequestMapping(value = "Allquery.net",method = RequestMethod.POST)
-	public String Allquery(String Allquery, Model model)throws Exception {
-		String kim = "";
-		String p ="1";
+	public String Allquery(String Allquery,@RequestParam(required = false,defaultValue = "1")int p,
+			@RequestParam(required = false,defaultValue = "no")String kim,@RequestParam(required = false, defaultValue = "no")String kim2,@RequestParam(required = false, defaultValue = "no")String kim3, Model model)throws Exception {		
+		Map<String, Object> all = new HashMap<String, Object>();
+		ArrayList<All_Hs> all_one = new ArrayList<All_Hs>();
+		Gson gson = new Gson();		
 		
-		All_test all = Alldetail(URLEncoder.encode(Allquery,"UTF-8"),p,kim);	
-		
-		if(all!=null) {
-		model.addAttribute("all", all.getItem());
-		model.addAttribute("hidden", Allquery);
-		}else {
+		try {
+			all = Alldetail(URLEncoder.encode(Allquery,"UTF-8"),p,kim,kim2);			
+			if((Long)all.get("total")==1) {						
+				all_one.add((All_Hs) all.get("result_all"));
+				model.addAttribute("all", all_one);				
+				model.addAttribute("total", all.get("total"));	
+				model.addAttribute("hidden", Allquery);
+				if(p>=2 && kim3.equals("kim3"))					
+					return "details/all_click";
+			}else {			
+				JSONObject a = (JSONObject) all.get("result_all");
+				String real = a.toJSONString();
+				All_test testing = gson.fromJson(real, All_test.class);
+				model.addAttribute("all", testing.getItem());
+				model.addAttribute("total", all.get("total"));
+				model.addAttribute("hidden", Allquery);	
+				if(p>=2 || kim3.equals("kim3")) 
+					return "details/all_click";
+				
+			}
+				
+			
+		}catch (NullPointerException e) {		
 			model.addAttribute("msg", "검색된 결과가없습니다");
 			model.addAttribute("hidden", Allquery);
+			model.addAttribute("total", "0");
+			if(kim3.equals("kim3")) 
+				return "details/all_click";
+			
 		}
-		
+	
+	
 		return "details/allquery";
 	}
 	
-	/**
-	 * @author 김건수
-	 * @param Allquery
-	 * @param p
-	 * @param model
-	 * @return
-	 * @throws Exception
-	 * @귀찮아서 jsp로뺌
-	 */
-	@RequestMapping(value = "All_click.net",method = RequestMethod.POST)
-	public String Allclick(String Allquery,String p,@RequestParam(value = "",required =false,defaultValue = "")String kim,Model model)throws Exception {
-		System.out.println("이름");
-		System.out.println(Allquery);
-		System.out.println("페이지");
-		System.out.println(p);
-		System.out.println("셀렉트박스");
-//		System.out.println(kim);
-//		if(kim==null) {
-//			kim="";
-//		}			
-		if(p==null) {
-		p="1";}		
-		All_test all = Alldetail(URLEncoder.encode(Allquery,"UTF-8"),p,kim);	
-		
-		if(all!=null) {
-		model.addAttribute("all", all.getItem());
-		model.addAttribute("hidden", Allquery);
-		}else {
-			model.addAttribute("msg", "검색된 결과가없습니다");
-			model.addAttribute("hidden", Allquery);
-		}
-		
-		return "details/all_click";
-	}
 	
-
 	/**
 	 * @author 김건수
 	 * @param Allquery
 	 * @return hdtailVO
 	 * 
 	 */
-	public All_test Alldetail(String all,String p,String kim) throws Exception{				
-		Gson gson = new Gson();
-		All_Hs all_one = new All_Hs();
-		All_test all_t = new All_test();
+	public Map<String, Object>Alldetail(String all,int p,String kim,String kim2) throws Exception{
+		Map<String, Object> result_hs = new HashMap<String, Object>();		
+		All_Hs all_one = new All_Hs();		
 		JSONParser jsonparser = new JSONParser();
-		
-		JSONObject jsonobject = (JSONObject) jsonparser.parse(readUrl("http://apis.data.go.kr/B551182/hospInfoService/getHospBasisList?numOfRows=10&_type=json&ServiceKey=G9rzPM3G3d1FVN%2F8ZyPSkwQ7B0IICxPX3Sks%2FrUY2wLu94BsUzYPUHzcNhSwJj%2FIjuLsoBMYMJ7JcX4thVA7Lg%3D%3D"
-			+ "&yadmNm="+all+"&pageNo="+p+"&sidoCd="+kim));
+		String url = "http://apis.data.go.kr/B551182/hospInfoService/getHospBasisList?numOfRows=10&_type=json&ServiceKey=G9rzPM3G3d1FVN%2F8ZyPSkwQ7B0IICxPX3Sks%2FrUY2wLu94BsUzYPUHzcNhSwJj%2FIjuLsoBMYMJ7JcX4thVA7Lg%3D%3D"
+				+ "&yadmNm="+all+"&pageNo="+p;
+		if(!kim.equals("no")) 
+		url +="&sidoCd="+kim;
+		if(!kim2.equals("no")) 
+		url +="&dgsbjtCd="+kim2;
+
+		JSONObject jsonobject = (JSONObject) jsonparser.parse(readUrl(url));
 		
 		JSONObject json = (JSONObject) jsonobject.get("response");
 		JSONObject body = (JSONObject) json.get("body");
+		
 		Long total = (Long) body.get("totalCount");
 		if(total==1) {	
 			JSONObject items = (JSONObject) body.get("items");				
@@ -160,24 +152,36 @@ public class MapController {
 			all_one.setYPos(item.get("YPos"));
 			all_one.setYadmNm(item.get("yadmNm"));
 			all_one.setYkiho(item.get("ykiho"));
-			List<All_Hs> al = new ArrayList<All_Hs>();
-			al.add(all_one);
-			all_t.setItem(al);
-			 return all_t;
+			result_hs.put("result_all", all_one);
+			result_hs.put("total",total);
+			return result_hs;
 			
-		}else if(total==0) {
+		}else if(total==0) {			
 			return null;
 		}else {		
-		JSONObject items = (JSONObject) body.get("items");
-		String a = items.toJSONString();
-		All_test testing = gson.fromJson(a, All_test.class);
-		return testing;
+//			try {
+		JSONObject items = (JSONObject) body.get("items");		
+		result_hs.put("result_all", items);		
+		result_hs.put("total", total);	
+		return result_hs;
 		}
+//			}catch (ClassCastException e) {
+//				System.out.println("개빡치네 캐치몇번째야");
+//			}
+//		}
+//		return null;
 	
 	}
 	
 	
 	
+	
+	
+	
+	
+
+	
+
 	
 	@ResponseBody
 	@RequestMapping(value = "favorites_add.net",method = RequestMethod.POST)
@@ -212,8 +216,7 @@ public class MapController {
 		
 	}
 	
-	
-	
+
 	/**
 	 * @param req 좌표
 	 * @param res
@@ -510,7 +513,7 @@ public class MapController {
 	 * 
 	 */
 	private static String readUrl(String urlString) throws Exception {
-		System.out.println(urlString);
+		
 		//System.out.println(urlString);
 		BufferedReader reader = null;		
 		try {
