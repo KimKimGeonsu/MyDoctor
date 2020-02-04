@@ -323,7 +323,8 @@ input:focus {
 							title="ex)11:00 -> 1100"> <span style="color: white;">~</span>
 						<input id="satEnd" name="satEnd" placeholder="토 종료시간 (휴무 00 표기)"
 							class="day" required maxlength="4" pattern="[0-9]{4}"
-							title="ex)11:00 -> 1100"><input id="sunStart"
+							title="ex)11:00 -> 1100">
+							<input id="sunStart"
 							name="sunStart" placeholder="일 시작시간 (휴무 00 표기)" class="day"
 							required maxlength="4" pattern="[0-9]{4}"
 							title="ex)11:00 -> 1100"> <span style="color: white;">~</span>
@@ -332,8 +333,8 @@ input:focus {
 							title="ex)11:00 -> 1100">
 						<input id="lunchStart" name="lunchStart" placeholder="점심 종료시간 (기호 :생략)"
 							class="day" required maxlength="4" pattern="[0-9]{4}"
-							title="ex)11:00 -> 1100">
-						<input id="lunchEnd" name="lunchEnd" placeholder="점심 종료시간 (기호 :생략)"
+							title="ex)11:00 -> 1100">  <span style="color: white;">~</span>
+						 <input id="lunchEnd" name="lunchEnd" placeholder="점심 종료시간 (기호 :생략)"
 							class="day" required maxlength="4" pattern="[0-9]{4}"
 							title="ex)11:00 -> 1100">
 
@@ -751,7 +752,8 @@ input:focus {
                  // dataType : "json",
                  // contentType: "application/json; charset=UTF-8",
                   success : function(data) {
-                	  if(data==1){
+                	  console.log(data)
+                	  if(data==1){              		  
                 		  $("#id_check").html("중복된아이디입니다");                	
                 		  $("#id").val("");
                 		  $("#id").focus();

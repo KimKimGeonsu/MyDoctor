@@ -76,7 +76,7 @@ public class MapController {
 				model.addAttribute("all", all_one);				
 				model.addAttribute("total", all.get("total"));	
 				model.addAttribute("hidden", Allquery);
-				if(p>=2 && kim3.equals("kim3"))					
+				if(p>=2 || kim3.equals("kim3"))					
 					return "details/all_click";
 			}else {			
 				JSONObject a = (JSONObject) all.get("result_all");
@@ -129,6 +129,7 @@ public class MapController {
 		
 		Long total = (Long) body.get("totalCount");
 		if(total==1) {	
+			try {
 			JSONObject items = (JSONObject) body.get("items");				
 			JSONObject item = (JSONObject) items.get("item");
 			//ㅅㅄ ㅄㅄ ㅂㄷㅅ ㅂ ㅅㅄ ㅄㅄ ㅄ ㅄ ㅄ ㅄ ㄷㅄ ㄷ
@@ -155,21 +156,25 @@ public class MapController {
 			result_hs.put("result_all", all_one);
 			result_hs.put("total",total);
 			return result_hs;
+			}catch (Exception e) {
+				System.out.println("캐치 ㅡㅡ");
+				return result_hs;
+			}
 			
 		}else if(total==0) {			
 			return null;
 		}else {		
-//			try {
+		try {
 		JSONObject items = (JSONObject) body.get("items");		
 		result_hs.put("result_all", items);		
 		result_hs.put("total", total);	
 		return result_hs;
+		}catch (ClassCastException e) {
+				System.out.println("개빡치네 캐치몇번째야");
+				return result_hs;
+			}
 		}
-//			}catch (ClassCastException e) {
-//				System.out.println("개빡치네 캐치몇번째야");
-//			}
-//		}
-//		return null;
+		
 	
 	}
 	
@@ -280,7 +285,7 @@ public class MapController {
 		parameter = parameter + addr;
 		parameter = parameter + "&xPos=" + xPos;
 		parameter = parameter + "&yPos=" + yPos;
-		parameter = parameter + "&radius=" + 100000;
+		parameter = parameter + "&radius=" + 5000;
 		parameter = parameter + "&_type=json";
 		if(query!="")
 		parameter = parameter + "&yadmNm="+URLEncoder.encode(query, "UTF-8");

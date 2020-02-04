@@ -310,7 +310,7 @@ $(function(){
                            });}
 
                      },error : function(data, err) {
-                        alert("에러발생?")
+                        alert("결과내용이없음")
                      }
                   });//ajax
 

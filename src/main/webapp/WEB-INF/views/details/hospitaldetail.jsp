@@ -127,15 +127,7 @@
                         </tbody>
                         
                      </table> --%>
-                     <a
-								href="https://map.kakao.com/link/to/${vo.yadmNm },${vo.YPos },${vo.XPos}"
-								class="button large reservationbtn koreanfont"
-								style="float: right; margin-top: 3%;" target="_blank">길찾기</a>
-                     <c:if test="${chk==1 }">
-                        <a href="reserve.net?yki=${vo.ykiho }"
-									class="button large reservationbtn koreanfont"
-									style="float: right; margin-top: 3%;" id="res_hos">예약하기</a>
-                     </c:if>                    
+                                      
                      <div>
                       <c:if test="${vo.addr!='undefined'}">
                       		주소 :${vo.addr}<br>
@@ -154,6 +146,15 @@
 								<c:if test="${vo.hospUrl!='undefined'}">
 									<a href="${vo.hospUrl}" target="_blank">사이트 방문하기</a>
 								</c:if> 
+								<a
+								href="https://map.kakao.com/link/to/${vo.yadmNm },${vo.YPos },${vo.XPos}"
+								class="button large reservationbtn koreanfont"
+								style="float: right; margin-top: 3%;" target="_blank">길찾기</a>
+                     <c:if test="${chk==1 }">
+                        <a href="reserve.net?yki=${vo.ykiho }"
+									class="button large reservationbtn koreanfont"
+									style="float: right; margin-top: 3%;" id="res_hos">예약하기</a>
+                     </c:if>   
                           
                      </div>
 
