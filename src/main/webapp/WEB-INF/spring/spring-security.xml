@@ -12,13 +12,15 @@
 	<http auto-config='true' use-expressions="true">
 		<intercept-url pattern="/*" requires-channel="https"
 			access="permitAll" />
-		<logout logout-url="/logout" logout-success-url="/main"
+		<logout logout-url="/logout" logout-success-url="/"
+			invalidate-session="true" />
+			<logout logout-url="mydoctor/logout" logout-success-url="/"
 			invalidate-session="true" />
 	<!-- 		<http-basic/>
 			 <csrf request-matcher-ref="csrfMatcher"/> -->
 		<!--  <intercept-url pattern="/intro_hs"  requires-channel="http"/> -->
-			<!-- 특정 URI <intercept-url pattern="/intro_hs" requires-channel="http"/>
-		<csrf disabled="false" /> -->
+			<!-- 특정 URI <intercept-url pattern="/intro_hs" requires-channel="http"/>-->
+		<csrf disabled="false" /> 
 		
 	
    <!--  <headers>

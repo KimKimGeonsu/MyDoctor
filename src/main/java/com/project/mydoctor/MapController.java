@@ -68,6 +68,7 @@ public class MapController {
 			@RequestParam(required = false, defaultValue = "no") String kim,
 			@RequestParam(required = false, defaultValue = "no") String kim2,
 			@RequestParam(required = false, defaultValue = "no") String kim3, Model model) throws Exception {
+		System.out.println(Allquery);
 		Map<String, Object> all = new HashMap<String, Object>();
 		ArrayList<All_Hs> all_one = new ArrayList<All_Hs>();
 		Gson gson = new Gson();

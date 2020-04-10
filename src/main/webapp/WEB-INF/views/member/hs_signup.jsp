@@ -1,11 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!------ Include the above in your HEAD tag ---------->
 
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="_csrf" content="${_csrf.token}"/>
+
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 
 
 <style type="text/css">
@@ -164,6 +168,7 @@ input:focus {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
 <link
 	href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
@@ -187,6 +192,7 @@ input:focus {
 
 
 <title>Sign Up</title>
+<script type="text/javascript" src="resources/js/jquery-3.4.1.min.js"></script> 
 
 </head>
 <body>
@@ -200,6 +206,7 @@ input:focus {
 		<div class="d-flex justify-content-center h-100">
 			<form class="needs-validation" action="hs_signup.do" method="post"
 				id="form1">
+				<sec:csrfInput/>
 				<div class="card">
 					<div class="card-header">
 						<h2 class="text-center text-light">Sign Up</h2>
@@ -718,7 +725,10 @@ input:focus {
                parallax: false
            });
            
-           
+           var token = $("meta[name='_csrf']").attr("content");
+			console.log(token);
+       	var header = $("meta[name='_csrf_header']").attr("content");
+			console.log(header);
            
            
            
@@ -750,6 +760,9 @@ input:focus {
                   url : "idcheck",
                  // dataType : "json",
                  // contentType: "application/json; charset=UTF-8",
+                  beforeSend: function(xhr) {                    	                                           
+                        xhr.setRequestHeader(header, token);
+                    },
                   success : function(data) {
                 	  if(data==1){
                 		  $("#id_check").html("중복된아이디입니다");                	
@@ -817,6 +830,9 @@ input:focus {
       	                    url: "hs_signup_name.do",
       	                    dataType: "json",   
       	                    data: { h_name : $("#yadmNm").val() },
+      	                  beforeSend: function(xhr) {                    	                    
+                              xhr.setRequestHeader(header, token);
+                          },
       	                    success: function(data) {
       	                    	var result =data.response.body.items.item;
       	                        //서버에서 json 데이터 response 후 목록에 뿌려주기 위함
@@ -850,6 +866,9 @@ input:focus {
 	                    url: "hs_work.do",
 	                    dataType: "json",   
 	                    data: { h_hideen : $("#yki").val() },
+	                    beforeSend: function(xhr) {                    	                    
+                            xhr.setRequestHeader(header, token);
+                        },
 	                    success: function(data) {
 	                    	//var hidden =data.response.body.items.item;
 	                    	//noTrmtHoli

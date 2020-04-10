@@ -11,6 +11,7 @@
             <!-- Search -->
             <section id="search" class="alt">
                <form method="post" action="Allquery.net">
+               <sec:csrfInput/>
                    <input type="text" name="Allquery" id="Allquery" placeholder="모든 병원 검색" />
                </form>
             </section>
@@ -106,6 +107,11 @@
                   <a href="logout" class="button primary fit koreanfont">로그아웃</a>
                </section>
             </c:if>
+            
+            
+            
+            
+            
             <!-- 관리자일 경우 -->
             <c:if test="${loginid == 'admin'}">
                <section>
@@ -131,7 +137,10 @@
                         href="requestToAdmin">요청 게시판</a></li>
                   </ul>
                   <br>
-                  <a href="logout" class="button primary fit koreanfont">로그아웃</a>
+                   <form action="logout" method="POST"> 
+                   <sec:csrfInput/>
+                  <input type="submit" class="button primary fit koreanfont" value="로그아웃"/> 
+                  </form>
                </section>
             </c:if>
             <c:if test="${loginid != 'admin'}">
