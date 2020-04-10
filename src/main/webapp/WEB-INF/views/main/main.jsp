@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE HTML>
 
 <html>
@@ -10,9 +10,6 @@
 <title>My Doctor</title>
  
 <meta charset="utf-8" />
-<meta name="_csrf" content="${_csrf.token}"/>
-
-<meta name="_csrf_header" content="${_csrf.headerName}"/>
 
 
 <meta name="viewport"
@@ -114,7 +111,7 @@
                         $('#roding').addClass('roding');
                         $("#nearpharmacy").prop("disabled", true);
                         $("#mask").prop("disabled", true);
-                        xhr.setRequestHeader(header, token);
+                       
                     },
                     complete: function() {
                         $('#roding').removeClass('roding');
@@ -175,8 +172,7 @@
                         $("#div_result").empty();
                         $('#roding').addClass('roding');
                         $("#nearpharmacy").prop("disabled", true);
-                        $("#mask").prop("disabled", true);
-                        xhr.setRequestHeader(header, token);
+                        $("#mask").prop("disabled", true);                    
                     },
                     complete: function() {
                         $('#roding').removeClass('roding');
@@ -448,7 +444,10 @@
                 navigator.geolocation.getCurrentPosition(onSuccess, onError) //geo funtion
 
             } else {
-                alert("geolocation 미지원 브라우저입니다");
+            	 var lon = 127.047724, // 경도
+                 lat = 37.739063; // 위도                  
+             location(lon, lat);
+                
             }
 
             function onSuccess(position) {
@@ -463,6 +462,9 @@
                     lat = 37.5646291; // 위도                  
                 location(lon, lat);
             }
+            
+        
+            
         }); //onload
     </script>
 
@@ -561,7 +563,7 @@
 	</div>
 		<div>
 			<form>
-			<sec:csrfInput/>
+		
 			</form>
 			</div>
 		

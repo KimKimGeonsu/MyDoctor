@@ -112,11 +112,12 @@ public class MemberController {
 		// String encryptPass = bc.encode(member.getPassword());
 		// 숫자높아질수록 해쉬를 생성하고 검증하는 시간 길어지고 시간이길어짐 기본값 10- > 보안우수
 		// member.setPassword(BCrypt.hashpw(member.getPassword(), BCrypt.gensalt(10)));
-		member.setPassword(bc.encode(member.getPassword()));		
+		member.setPassword(bc.encode(member.getPassword()));
+		System.out.println(member.getBirth());
 		int result = memberService.insertMember(member);
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
-
+		
 		if (result == 1) {
 			out.print("<script>alert('가입을 축하드립니다');</script>");
 			session.setAttribute("loginid", member.getId());

@@ -9,27 +9,28 @@
     http://www.springframework.org/schema/security/spring-security.xsd">
 	<beans:bean id="bcryptPasswordEncoder"
 		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
-	<http auto-config='true' use-expressions="true">
+	<!-- <http auto-config='true' use-expressions="true">
 		<intercept-url pattern="/*" requires-channel="https"
 			access="permitAll" />
 		<logout logout-url="/logout" logout-success-url="/main"
 			invalidate-session="true" />
-	<!-- 		<http-basic/>
-			 <csrf request-matcher-ref="csrfMatcher"/> -->
-		<!--  <intercept-url pattern="/intro_hs"  requires-channel="http"/> -->
-			<!-- 특정 URI <intercept-url pattern="/intro_hs" requires-channel="http"/>
-		<csrf disabled="false" /> -->
+			<http-basic/>
+			 <csrf request-matcher-ref="csrfMatcher"/>
+		 <intercept-url pattern="/intro_hs"  requires-channel="http"/>
+			특정 URI <intercept-url pattern="/intro_hs" requires-channel="http"/>
+		<csrf disabled="false" />
 		
 	
-   <!--  <headers>
+    <headers>
         <frame-options policy="SAMEORIGIN"/>
-    </headers> -->
+    </headers>
+    <csrf disabled="true" />
 	</http>
 	
 	 
 	
 	
-<!-- 	<beans:bean id="csrfMatcher" class="org.springframework.security.web.util.matcher.AndRequestMatcher">
+	<beans:bean id="csrfMatcher" class="org.springframework.security.web.util.matcher.AndRequestMatcher">
     <beans:constructor-arg value="#{T(org.springframework.security.web.csrf.CsrfFilter).DEFAULT_CSRF_MATCHER}"/>
     <beans:constructor-arg>
         <beans:bean class="org.springframework.security.web.util.matcher.NegatedRequestMatcher"></beans:bean>
@@ -42,8 +43,8 @@
 	
 	
 
- -->
-<!-- <beans:bean id="csrfMatcher" class="org.springframework.security.web.util.matcher.OrRequestMatcher">
+
+<beans:bean id="csrfMatcher" class="org.springframework.security.web.util.matcher.OrRequestMatcher">
         <beans:constructor-arg>
             <beans:list value-type="org.springframework.security.web.util.matcher.RequestMatcher">
                 <beans:bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
@@ -60,13 +61,13 @@
                 </beans:bean>
           </beans:list>
         </beans:constructor-arg>
-</beans:bean> -->
+</beans:bean>
 
 
  	<authentication-manager>
-<!-- 		<authentication-provider> <user-service> <user name="master" password="kim1234" 
-			authorities="ROLE_USER" /> </user-service> </authentication-provider> -->
+		<authentication-provider> <user-service> <user name="master" password="kim1234" 
+			authorities="ROLE_USER" /> </user-service> </authentication-provider>
 	</authentication-manager> 
 
-
+ -->
 </beans:beans>

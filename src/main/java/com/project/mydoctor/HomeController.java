@@ -1,6 +1,7 @@
 package com.project.mydoctor;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,9 +93,18 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "kakaologin", produces = "application/json", method = RequestMethod.GET)
-	public ModelAndView kakaologin(ModelAndView mv, @RequestParam("code") String code, HttpServletRequest req,
-			HttpServletResponse res, HttpSession session,SNSlogin sns,Member m) {
+	public ModelAndView kakaologin(ModelAndView mv, @RequestParam(value = "code",required = false, defaultValue = "pop") String code, HttpServletRequest req,
+			HttpServletResponse res, HttpSession session,SNSlogin sns,Member m) throws Exception{
+		if(code.equals("pop")) {
+			res.setContentType("text/html;charset=utf-8");
+			PrintWriter out = res.getWriter();
+			out.print("<script>alert('취소하였습니다');</script>");
+			out.close();
+			return null;	
+		}
+		
 		//결과값을 node에 담아둠
+		
 		JsonNode node = sns.getAccessToken(code);
 		System.out.println("sns로그인컨트롤러탔다 코드"+code);
 		
@@ -110,14 +120,7 @@ public class HomeController {
 		JsonNode properties =userInfo.path("properties");
 		JsonNode kakao_account =userInfo.path("kakao_account");
 		String id = userInfo.path("id").asText();
-		
-		String kemail = kakao_account.path("email").asText();
-		String kname = properties.path("nickname").asText();
-		String kimage = properties.path("profile_image").asText();
-		String kgender = kakao_account.path("gender").asText();
-		String kbirthday = kakao_account.path("birthday").asText();
-		String kage = kakao_account.path("age_range").asText();
-		System.out.println(id);
+
 		
 		//데이터넣기
 		m.setId(userInfo.path("id").asText());
@@ -125,8 +128,8 @@ public class HomeController {
 		m.setName(properties.path("nickname").asText());
 		m.setPhone(0);
 		m.setAddress("입력해주세요");
-		m.setEmail(kakao_account.path("email").asText());
-		m.setBirth("01"+kakao_account.path("birthday").asText());
+		m.setEmail("kaka@naver.kaka");
+		m.setBirth("1990-01-01");
 		m.setGender((byte) 0);
 		
 		
@@ -154,6 +157,7 @@ public class HomeController {
 		
 		mv.setViewName("redirect:/main");	
 		return mv;
+		}
 	}
 
-}
+

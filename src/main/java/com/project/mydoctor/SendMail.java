@@ -52,7 +52,7 @@ public class SendMail {
 				out.println("location.href='main'");
 				out.println("</script>");
 				out.close();
-				setfrom = "mydoctor453@gmail.com";
+				setfrom = "rjstn19339@gmail.com";
 				tomail = email; // 받는 사람 이메일
 				title = "My doctor, 임시 비밀번호 안내 드립니다."; // 제목
 				content = "임시비밀번호는 " + uuid + " 입니다."; // 내용
